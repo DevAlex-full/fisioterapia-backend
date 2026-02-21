@@ -1,0 +1,219 @@
+// ============================================================
+// PRISMA SCHEMA - Fisioterapia Débora Santiago CMS
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// ADMIN
+// ============================================================
+model Admin {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  nome      String   @default("Administrador")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("admins")
+}
+
+// ============================================================
+// HERO SECTION
+// ============================================================
+model Hero {
+  id            String   @id @default(cuid())
+  titulo        String   @default("Recuperação")
+  subtitulo     String   @default("Extraordinária")
+  descricao     String   @default("Fisioterapia especializada que transforma sua recuperação pós-cirúrgica.")
+  videoUrl      String?
+  posterUrl     String?
+  badge         String   @default("Especialista em Pós-Operatório")
+  ctaPrimario   String   @default("Agendar Avaliação Gratuita")
+  ctaSecundario String   @default("Conhecer Tratamentos")
+  ativo         Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("hero")
+}
+
+// ============================================================
+// ABOUT SECTION
+// ============================================================
+model About {
+  id              String   @id @default(cuid())
+  nome            String   @default("Débora Santiago")
+  titulo          String   @default("Conheça a Especialista")
+  descricao1      String   @default("Sou fisioterapeuta especializada em pós-operatório de cirurgias plásticas...")
+  descricao2      String   @default("Minha missão é proporcionar uma recuperação segura, rápida e confortável...")
+  fotoUrl         String?
+  anosExp         Int      @default(10)
+  pacientes       Int      @default(500)
+  satisfacao      Int      @default(98)
+  especializacoes Int      @default(15)
+  crefito         String   @default("CREFITO-3")
+  especialidade   String   @default("Especialista Dermato-Funcional")
+  ativo           Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("about")
+}
+
+// ============================================================
+// SERVIÇOS
+// ============================================================
+model Servico {
+  id         String   @id @default(cuid())
+  titulo     String
+  descricao  String
+  icone      String   @default("💆‍♀️")
+  beneficios String[]
+  duracao    String   @default("60 min")
+  preco      String   @default("Consulte")
+  cor        String   @default("from-purple-400 to-purple-600")
+  ordem      Int      @default(0)
+  ativo      Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("servicos")
+}
+
+// ============================================================
+// DEPOIMENTOS
+// ============================================================
+model Depoimento {
+  id           String   @id @default(cuid())
+  nome         String
+  procedimento String
+  texto        String
+  rating       Int      @default(5)
+  fotoUrl      String?
+  ordem        Int      @default(0)
+  ativo        Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("depoimentos")
+}
+
+// ============================================================
+// BLOG
+// ============================================================
+model BlogPost {
+  id        String   @id @default(cuid())
+  titulo    String
+  slug      String   @unique
+  excerpt   String
+  conteudo  String
+  imagemUrl String?
+  autor     String   @default("Débora Santiago")
+  readTime  String   @default("5 min")
+  publicado Boolean  @default(false)
+  destaque  Boolean  @default(false)
+  tags      String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("blog_posts")
+}
+
+// ============================================================
+// FAQ
+// ============================================================
+model FAQ {
+  id        String   @id @default(cuid())
+  pergunta  String
+  resposta  String
+  ordem     Int      @default(0)
+  ativo     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("faqs")
+}
+
+// ============================================================
+// INSTAGRAM POSTS
+// ============================================================
+model InstagramPost {
+  id        String   @id @default(cuid())
+  url       String
+  mediaUrl  String
+  tipo      String   @default("image")
+  posterUrl String?
+  legenda   String?
+  ordem     Int      @default(0)
+  ativo     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("instagram_posts")
+}
+
+// ============================================================
+// CONTATO / INFORMAÇÕES
+// ============================================================
+model ContatoInfo {
+  id            String   @id @default(cuid())
+  telefone      String   @default("(11) 96035-4728")
+  whatsapp      String   @default("5511960354728")
+  email         String   @default("deborabueno_2@hotmail.com")
+  instagram     String   @default("@debora.santiago.fisio")
+  instagramUrl  String   @default("https://www.instagram.com/debora.santiago.fisio/")
+  endereco      String   @default("Rua Tabapuã, 474 - conjunto 98")
+  bairro        String   @default("Itaim Bibi")
+  cidade        String   @default("São Paulo - SP")
+  cep           String   @default("CEP: 04533-001")
+  horarioSemana String   @default("Segunda a Sexta: 8h às 18h")
+  horarioSabado String   @default("Sábado: 8h às 12h")
+  mensagemWpp   String   @default("Olá! Gostaria de agendar uma avaliação de fisioterapia pós-cirúrgica.")
+  ativo         Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("contato_info")
+}
+
+// ============================================================
+// PROCEDIMENTOS
+// ============================================================
+model Procedimento {
+  id        String   @id @default(cuid())
+  nome      String
+  ordem     Int      @default(0)
+  ativo     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("procedimentos")
+}
+
+// ============================================================
+// SITE SETTINGS
+// ============================================================
+model SiteSettings {
+  id              String   @id @default(cuid())
+  nomeClinica     String   @default("Débora Santiago")
+  logoUrl         String?
+  corPrimaria     String   @default("#D4AF7A")
+  corSecundaria   String   @default("#8B7355")
+  corTexto        String   @default("#5D4E37")
+  metaTitle       String   @default("Débora Santiago | Fisioterapia Pós-Operatória")
+  metaDesc        String   @default("Fisioterapia especializada em pós-operatório de cirurgias plásticas.")
+  googleAnalytics String?
+  pixelFacebook   String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("site_settings")
+}
