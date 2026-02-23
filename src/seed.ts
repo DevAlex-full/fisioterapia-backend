@@ -249,6 +249,106 @@ async function main() {
     console.log('✅ Site Settings criado');
   }
 
+  // ============================================================
+  // INSTAGRAM POSTS
+  // ============================================================
+  const instaCount = await prisma.instagramPost.count();
+  if (instaCount === 0) {
+    const posts = [
+      {
+        url: 'https://www.instagram.com/reel/DFD2Kw-xliC/',
+        mediaUrl: '/videos/dia-do-medico.mp4',
+        tipo: 'video',
+        posterUrl: '/images/outubro-rosa.jpg',
+        legenda: 'Nos bastidores da cirurgia',
+        ordem: 1,
+        ativo: true,
+      },
+      {
+        url: 'https://www.instagram.com/p/DPHPhyYgBxn/',
+        mediaUrl: '/videos/linfatica.mp4',
+        tipo: 'video',
+        posterUrl: '/images/linfatica.jpeg',
+        legenda: 'Drenagem linfática pós-operatória',
+        ordem: 2,
+        ativo: true,
+      },
+      {
+        url: 'https://www.instagram.com/p/DPoP0VrAOde/',
+        mediaUrl: '/images/outubro-rosa.jpg',
+        tipo: 'image',
+        posterUrl: null,
+        legenda: 'Outubro Rosa',
+        ordem: 3,
+        ativo: true,
+      },
+      {
+        url: 'https://www.instagram.com/p/DPvjeL1DcH6/',
+        mediaUrl: '/videos/transformacao.mp4',
+        tipo: 'video',
+        posterUrl: '/images/outubro-rosa.jpg',
+        legenda: 'Transformação pós-operatória',
+        ordem: 4,
+        ativo: true,
+      },
+    ];
+    for (const post of posts) {
+      await prisma.instagramPost.create({ data: post });
+    }
+    console.log('✅ Instagram Posts criados (4)');
+  }
+
+  // ============================================================
+  // BLOG POSTS
+  // ============================================================
+  const blogCount = await prisma.blogPost.count();
+  if (blogCount === 0) {
+    const blogPosts = [
+      {
+        titulo: '5 Dicas Essenciais para Recuperação Pós-Cirúrgica',
+        slug: '5-dicas-essenciais-recuperacao-pos-cirurgica',
+        excerpt: 'Descubra as melhores práticas para uma recuperação rápida e segura após sua cirurgia plástica.',
+        conteudo: 'A recuperação pós-cirúrgica é uma fase fundamental para garantir os melhores resultados. Neste artigo, compartilhamos as 5 dicas mais importantes que nossa equipe recomenda para todas as pacientes.\n\n1. Inicie a fisioterapia precocemente\nQuanto antes você começar o tratamento fisioterapêutico, melhores serão os resultados. Geralmente recomendamos iniciar entre 3 a 7 dias após a cirurgia.\n\n2. Use a cinta compressora corretamente\nA cinta é fundamental para modelar o resultado e reduzir o edema. Use conforme orientação do seu cirurgião.\n\n3. Mantenha-se hidratada\nBeber pelo menos 2 litros de água por dia acelera a eliminação de toxinas e favorece a cicatrização.\n\n4. Durma na posição correta\nA posição de descanso influencia diretamente no resultado. Siga as orientações específicas para o seu procedimento.\n\n5. Compareça a todas as sessões\nA regularidade no tratamento é fundamental. Não pule sessões, pois cada uma tem um objetivo específico na sua recuperação.',
+        imagemUrl: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=800&q=80',
+        autor: 'Débora Santiago',
+        readTime: '5 min',
+        publicado: true,
+        destaque: true,
+        tags: ['recuperação', 'dicas', 'pós-operatório'],
+      },
+      {
+        titulo: 'Drenagem Linfática: Como Funciona e Benefícios',
+        slug: 'drenagem-linfatica-como-funciona-beneficios',
+        excerpt: 'Entenda como a drenagem linfática pode acelerar sua recuperação e reduzir edemas.',
+        conteudo: 'A drenagem linfática manual é uma das técnicas mais importantes no pós-operatório de cirurgias plásticas. Mas você sabe exatamente como ela funciona e por que é tão eficaz?\n\nO que é a drenagem linfática?\nÉ uma técnica de massagem suave e rítmica que estimula o sistema linfático a trabalhar mais eficientemente, removendo o excesso de líquido acumulado nos tecidos.\n\nComo funciona?\nOs movimentos suaves e direcionados do fisioterapeuta seguem o caminho natural dos vasos linfáticos, ajudando a drenar o líquido acumulado (edema) para os gânglios linfáticos, onde será filtrado e eliminado pelo organismo.\n\nBenefícios comprovados:\n- Reduz o inchaço em até 70%\n- Acelera a cicatrização\n- Previne fibrose e endurecimentos\n- Melhora a circulação\n- Proporciona bem-estar e relaxamento\n- Potencializa o resultado estético da cirurgia',
+        imagemUrl: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=800&q=80',
+        autor: 'Débora Santiago',
+        readTime: '7 min',
+        publicado: true,
+        destaque: false,
+        tags: ['drenagem linfática', 'edema', 'técnica'],
+      },
+      {
+        titulo: 'Quando Iniciar a Fisioterapia Pós-Operatória',
+        slug: 'quando-iniciar-fisioterapia-pos-operatoria',
+        excerpt: 'Saiba o momento ideal para começar seu tratamento fisioterapêutico.',
+        conteudo: 'Uma das perguntas mais frequentes das nossas pacientes é: quando devo iniciar a fisioterapia após a minha cirurgia? A resposta depende de alguns fatores, mas vamos esclarecer tudo.\n\nO momento ideal\nGeralmente, recomendamos iniciar entre 3 a 7 dias após o procedimento cirúrgico. Porém, isso pode variar conforme:\n- O tipo de cirurgia realizada\n- A orientação do seu cirurgião plástico\n- Suas condições gerais de saúde\n- A extensão do procedimento\n\nPor que iniciar cedo?\nQuanto mais precocemente você iniciar o tratamento, melhores serão os resultados. A fisioterapia precoce:\n- Previne a formação de fibroses\n- Reduz o edema mais rapidamente\n- Acelera a cicatrização\n- Melhora a mobilidade\n- Otimiza o resultado estético final\n\nO que acontece se eu demorar?\nAtrasar o início da fisioterapia pode resultar em maior tempo de recuperação, formação de fibroses, resultados estéticos menos satisfatórios e maior desconforto no pós-operatório.',
+        imagemUrl: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80',
+        autor: 'Débora Santiago',
+        readTime: '4 min',
+        publicado: true,
+        destaque: false,
+        tags: ['fisioterapia', 'início', 'pós-operatório'],
+      },
+    ];
+
+    for (const post of blogPosts) {
+      await prisma.blogPost.create({ data: post });
+    }
+    console.log('✅ Blog Posts criados (3)');
+  }
+
+  // ============================================================
   console.log('\n🎉 Seed concluído com sucesso!');
   console.log(`\n🔐 Acesso ao Admin:\n   Email: ${adminEmail}\n   Senha: ${adminPassword}`);
 }
