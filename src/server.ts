@@ -15,6 +15,7 @@ import contatoRoutes      from './routes/contato.routes';
 import procedimentoRoutes from './routes/procedimento.routes';
 import settingsRoutes     from './routes/settings.routes';
 import uploadRoutes       from './routes/upload.routes';
+import midiaRoutes        from './routes/midia.routes';
 
 dotenv.config();
 
@@ -34,15 +35,22 @@ app.use(cors({
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
+// ============================================================
+// HEALTH CHECK
+// ============================================================
 app.get('/health', (_req, res) => {
   res.json({
     status: 'OK',
     message: 'API Fisioterapia Débora Santiago - Online',
     timestamp: new Date().toISOString(),
     env: process.env.NODE_ENV,
+    version: '2.0.0',
   });
 });
 
+// ============================================================
+// ROTAS
+// ============================================================
 app.use('/api/auth',          authRoutes);
 app.use('/api/hero',          heroRoutes);
 app.use('/api/about',         aboutRoutes);
@@ -55,7 +63,11 @@ app.use('/api/contato',       contatoRoutes);
 app.use('/api/procedimentos', procedimentoRoutes);
 app.use('/api/settings',      settingsRoutes);
 app.use('/api/upload',        uploadRoutes);
+app.use('/api/midia',         midiaRoutes);
 
+// ============================================================
+// 404
+// ============================================================
 app.use((_req, res) => {
   res.status(404).json({ error: 'Rota não encontrada' });
 });

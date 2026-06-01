@@ -7,8 +7,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // ============================================================
@@ -199,12 +200,32 @@ model Procedimento {
 }
 
 // ============================================================
+// MÍDIA — GALERIA DE FOTOS E VÍDEOS
+// ============================================================
+model Midia {
+  id        String   @id @default(cuid())
+  titulo    String
+  descricao String?
+  url       String
+  tipo      String   @default("image") // "image" | "video"
+  categoria String   @default("geral") // "geral" | "resultados" | "clinica" | "instagram"
+  ordem     Int      @default(0)
+  destaque  Boolean  @default(false)
+  ativo     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("midias")
+}
+
+// ============================================================
 // SITE SETTINGS
 // ============================================================
 model SiteSettings {
   id              String   @id @default(cuid())
   nomeClinica     String   @default("Débora Santiago")
   logoUrl         String?
+  faviconUrl      String?
   corPrimaria     String   @default("#D4AF7A")
   corSecundaria   String   @default("#8B7355")
   corTexto        String   @default("#5D4E37")
@@ -212,6 +233,8 @@ model SiteSettings {
   metaDesc        String   @default("Fisioterapia especializada em pós-operatório de cirurgias plásticas.")
   googleAnalytics String?
   pixelFacebook   String?
+  whatsappFloat   Boolean  @default(true)
+  whatsappMsg     String   @default("Olá! Vim pelo site e gostaria de saber mais sobre os serviços.")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 

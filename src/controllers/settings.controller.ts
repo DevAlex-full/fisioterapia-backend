@@ -3,7 +3,9 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+// ============================================================
 // GET /api/settings → Público
+// ============================================================
 export const getSettings = async (_req: Request, res: Response): Promise<void> => {
   try {
     let settings = await prisma.siteSettings.findFirst();
@@ -19,12 +21,24 @@ export const getSettings = async (_req: Request, res: Response): Promise<void> =
   }
 };
 
+// ============================================================
 // PUT /api/settings → Admin
+// ============================================================
 export const updateSettings = async (req: Request, res: Response): Promise<void> => {
   try {
     const {
-      nomeClinica, logoUrl, corPrimaria, corSecundaria,
-      corTexto, metaTitle, metaDesc, googleAnalytics, pixelFacebook,
+      nomeClinica,
+      logoUrl,
+      faviconUrl,
+      corPrimaria,
+      corSecundaria,
+      corTexto,
+      metaTitle,
+      metaDesc,
+      googleAnalytics,
+      pixelFacebook,
+      whatsappFloat,
+      whatsappMsg,
     } = req.body;
 
     let settings = await prisma.siteSettings.findFirst();
@@ -37,6 +51,7 @@ export const updateSettings = async (req: Request, res: Response): Promise<void>
       data: {
         ...(nomeClinica !== undefined && { nomeClinica }),
         ...(logoUrl !== undefined && { logoUrl }),
+        ...(faviconUrl !== undefined && { faviconUrl }),
         ...(corPrimaria !== undefined && { corPrimaria }),
         ...(corSecundaria !== undefined && { corSecundaria }),
         ...(corTexto !== undefined && { corTexto }),
@@ -44,6 +59,8 @@ export const updateSettings = async (req: Request, res: Response): Promise<void>
         ...(metaDesc !== undefined && { metaDesc }),
         ...(googleAnalytics !== undefined && { googleAnalytics }),
         ...(pixelFacebook !== undefined && { pixelFacebook }),
+        ...(whatsappFloat !== undefined && { whatsappFloat: Boolean(whatsappFloat) }),
+        ...(whatsappMsg !== undefined && { whatsappMsg }),
       },
     });
 
