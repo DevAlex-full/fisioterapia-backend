@@ -1,8 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import rateLimit from 'express-rate-limit';
 
-// Routes
 import authRoutes         from './routes/auth.routes';
 import heroRoutes         from './routes/hero.routes';
 import aboutRoutes        from './routes/about.routes';
@@ -19,39 +19,52 @@ import midiaRoutes        from './routes/midia.routes';
 
 dotenv.config();
 
-const app = express();
+const app  = express();
 const PORT = process.env.PORT || 3001;
+
+// Rate limiting: Login — 10 tentativas / 15 min por IP
+const loginLimiter = rateLimit({
+  windowMs:        15 * 60 * 1000,
+  max:             10,
+  standardHeaders: true,
+  legacyHeaders:   false,
+  message:         { error: 'Muitas tentativas de login. Aguarde 15 minutos.' },
+  skip:            (req) => req.method !== 'POST',
+});
+
+// Rate limiting: Geral — 300 req / min por IP
+const generalLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max:      300,
+  message:  { error: 'Muitas requisições. Tente novamente em instantes.' },
+});
 
 app.use(cors({
   origin: [
     process.env.FRONTEND_URL || 'http://localhost:5173',
     'https://deborasantiago.vercel.app',
   ],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  credentials:    true,
+  methods:        ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use(generalLimiter);
 
-// ============================================================
-// HEALTH CHECK
-// ============================================================
+// Health check — sem expor NODE_ENV
 app.get('/health', (_req, res) => {
   res.json({
-    status: 'OK',
-    message: 'API Fisioterapia Débora Santiago - Online',
+    status:    'OK',
+    message:   'API Fisioterapia Débora Santiago — Online',
     timestamp: new Date().toISOString(),
-    env: process.env.NODE_ENV,
-    version: '2.0.0',
+    version:   '2.0.0',
   });
 });
 
-// ============================================================
-// ROTAS
-// ============================================================
-app.use('/api/auth',          authRoutes);
+// Rotas
+app.use('/api/auth',          loginLimiter, authRoutes);
 app.use('/api/hero',          heroRoutes);
 app.use('/api/about',         aboutRoutes);
 app.use('/api/servicos',      servicosRoutes);
@@ -65,20 +78,13 @@ app.use('/api/settings',      settingsRoutes);
 app.use('/api/upload',        uploadRoutes);
 app.use('/api/midia',         midiaRoutes);
 
-// ============================================================
 // 404
-// ============================================================
 app.use((_req, res) => {
-  res.status(404).json({ error: 'Rota não encontrada' });
+  res.status(404).json({ error: 'Rota não encontrada.' });
 });
 
 app.listen(PORT, () => {
-  console.log(`
-  ✅ Servidor rodando!
-  🌍 URL:     http://localhost:${PORT}
-  🔧 Env:     ${process.env.NODE_ENV}
-  📊 Health:  http://localhost:${PORT}/health
-  `);
+  console.log(`✅ Servidor rodando na porta ${PORT}`);
 });
 
 export default app;
