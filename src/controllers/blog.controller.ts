@@ -151,3 +151,64 @@ export const deletePost = async (req: Request, res: Response): Promise<void> => 
     res.status(500).json({ error: 'Erro interno do servidor.' });
   }
 };
+
+// GET /sitemap.xml → Sitemap dinâmico com posts publicados
+export const getDynamicSitemap = async (_req: Request, res: Response): Promise<void> => {
+    try {
+      const baseUrl = 'https://www.deborasantiago.com';
+
+      const posts = await prisma.blogPost.findMany({
+        where: { publicado: true },
+        orderBy: { createdAt: 'desc' },
+        select: {
+          slug: true,
+          updatedAt: true,
+          createdAt: true,
+        },
+      });
+
+      const staticUrls = [
+        {
+          loc: `${baseUrl}/`,
+          lastmod: new Date().toISOString(),
+          changefreq: 'weekly',
+          priority: '1.0',
+        },
+        {
+          loc: `${baseUrl}/blog`,
+          lastmod: new Date().toISOString(),
+          changefreq: 'weekly',
+          priority: '0.8',
+        },
+      ];
+
+      const postUrls = posts.map((post) => ({
+        loc: `${baseUrl}/blog/${post.slug}`,
+        lastmod: (post.updatedAt || post.createdAt).toISOString(),
+        changefreq: 'monthly',
+        priority: '0.7',
+      }));
+
+      const urls = [...staticUrls, ...postUrls];
+
+      const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls
+          .map(
+            (url) => `  <url>
+    <loc>${url.loc}</loc>
+    <lastmod>${url.lastmod}</lastmod>
+    <changefreq>${url.changefreq}</changefreq>
+    <priority>${url.priority}</priority>
+  </url>`
+          )
+          .join('\n')}
+</urlset>`;
+
+      res.setHeader('Content-Type', 'application/xml');
+      res.status(200).send(xml);
+    } catch (error) {
+      console.error('Erro ao gerar sitemap:', error);
+      res.status(500).send('Erro ao gerar sitemap.');
+    }
+};
